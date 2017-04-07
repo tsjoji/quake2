@@ -1,5 +1,6 @@
 #include "g_local.h"
 #include "m_player.h"
+#include <stdio.h>
 
 void ClientUserinfoChanged (edict_t *ent, char *userinfo);
 
@@ -26,6 +27,7 @@ static void SP_FixCoopSpots (edict_t *self)
 
 	while(1)
 	{
+		
 		spot = G_Find(spot, FOFS(classname), "info_player_start");
 		if (!spot)
 			return;
@@ -88,6 +90,7 @@ The normal starting point for a level.
 */
 void SP_info_player_start(edict_t *self)
 {
+	gi.dprintf("hello");
 	if (!coop->value)
 		return;
 	if(Q_stricmp(level.mapname, "security") == 0)
@@ -195,6 +198,16 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 	char		*message;
 	char		*message2;
 	qboolean	ff;
+	if (self->timesdead==NULL)
+	{
+		self->timesdead = 0;
+	}
+	self->timesdead = self->timesdead + 1;
+	FILE *fp = NULL;
+	fp = fopen("timesdead.txt","w");
+	fprintf(fp,"%d",self->timesdead);
+	fclose(fp);
+	//gi.dprintf("the number of times dead is currently %d\n", self->timesdead);
 
 	if (coop->value && attacker->client)
 		meansOfDeath |= MOD_FRIENDLY_FIRE;

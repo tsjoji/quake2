@@ -1,6 +1,6 @@
 
 #include "g_local.h"
-
+#include <stdio.h>
 typedef struct
 {
 	char	*name;
@@ -221,10 +221,13 @@ spawn_t	spawns[] = {
 	{"monster_gladiator", SP_monster_gladiator},
 	{"monster_gunner", SP_monster_gunner},
 	{ "monster_infantry", SP_monster_berserk },
+	{ "monster_soldier_light", SP_monster_berserk },
+	{ "monster_soldier", SP_monster_berserk },
+	{ "monster_soldier_ss", SP_monster_berserk },
 	//{"monster_infantry", SP_monster_infantry},
-	{"monster_soldier_light", SP_monster_soldier_light},
-	{"monster_soldier", SP_monster_soldier},
-	{"monster_soldier_ss", SP_monster_soldier_ss},
+	//{"monster_soldier_light", SP_monster_soldier_light},
+	//{"monster_soldier", SP_monster_soldier},
+	//{"monster_soldier_ss", SP_monster_soldier_ss},
 	{"monster_tank", SP_monster_tank},
 	{"monster_tank_commander", SP_monster_tank},
 	{"monster_medic", SP_monster_medic},
@@ -262,7 +265,11 @@ void ED_CallSpawn (edict_t *ent)
 	spawn_t	*s;
 	gitem_t	*item;
 	int		i;
-
+	
+	if (strcmp(ent->classname,"monster_soldier")==0)
+	{
+		ent->classname = "monster_berserk";
+	}
 	if (!ent->classname)
 	{
 		gi.dprintf ("ED_CallSpawn: NULL classname\n");
@@ -407,6 +414,7 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 	{	
 	// parse key
 		com_token = COM_Parse (&data);
+		
 		if (com_token[0] == '}')
 			break;
 		if (!data)
@@ -428,7 +436,7 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 	// and are immediately discarded by quake
 		if (keyname[0] == '_')
 			continue;
-
+		
 		ED_ParseField (keyname, com_token, ent);
 	}
 
@@ -502,12 +510,16 @@ parsing textual entity definitions out of an ent file.
 
 void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 {
+	static int c = 0;
 	edict_t		*ent;
 	int			inhibit;
 	char		*com_token;
 	int			i;
 	float		skill_level;
+	char a[100];
 	
+	
+
 	
 
 	skill_level = floor (skill->value);
@@ -540,6 +552,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	{
 		// parse the opening brace	
 		com_token = COM_Parse (&entities);
+		
 		if (!entities)
 			break;
 		if (com_token[0] != '{')

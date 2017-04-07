@@ -389,7 +389,6 @@ void G_RunFrame (void)
 			continue;
 
 		level.current_entity = ent;
-
 		VectorCopy (ent->s.origin, ent->s.old_origin);
 
 		// if the ground entity moved, make sure we are still on it

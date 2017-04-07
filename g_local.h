@@ -1099,6 +1099,6 @@ struct edict_s
 	int poison_damage;
 	int poison_step;
 	edict_t *poisoner;    //the player who inflicted poison
-
+	int timesdead; //the number of times the player died for the mutants to spawn
 };
 
